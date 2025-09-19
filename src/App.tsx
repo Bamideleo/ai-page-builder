@@ -1,0 +1,162 @@
+import React, { useState, useEffect} from 'react';
+import { BrowserRouter as Router, Routes, Route,} from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
+import { motion, AnimatePresence } from 'framer-motion';
+import { AuthPage } from './components/AuthPage';
+import { Dashboard } from './components/Dashboard';
+import { CreateProject } from './components/CreateProject';
+import { Workspace } from './components/Workspace';
+import { Editor } from './components/Editor';
+import { User, Project, Page } from './types';
+import Tutorial from './components/Tutorial';
+
+import Projected from './components/Project';
+
+
+function App() {
+  const [currentPage, setCurrentPage] = useState<Page>('auth');
+  const [user, setUser] = useState<User | null>(null);
+  const [currentProject, setCurrentProject] = useState<Project | null>(null);
+  const [currentPrompt, setCurrentPrompt] = useState('');
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  // Mock projects data
+  // useEffect(() => {
+  //   if (user) {
+  //     setProjects([
+  //       {
+  //         id: '1',
+  //         user_id: user.id,
+  //         title: 'E-commerce Store',
+  //         slug: 'ecommerce-store',
+  //         status: 'published',
+  //         framework: 'react',
+  //         deployment_type: 'subdomain',
+  //         urls: { subdomain: 'store.aibuilder.app' },
+  //         description: 'Modern online store with cart and checkout',
+  //         created_at: '2025-01-15T10:00:00Z',
+  //         updated_at: '2025-01-15T10:00:00Z'
+  //       },
+  //       {
+  //         id: '2',
+  //         user_id: user.id,
+  //         title: 'Portfolio Website',
+  //         slug: 'portfolio-site',
+  //         status: 'draft',
+  //         framework: 'vanilla',
+  //         deployment_type: 'slug',
+  //         description: 'Personal portfolio showcasing my work',
+  //         created_at: '2025-01-14T15:30:00Z',
+  //         updated_at: '2025-01-15T09:15:00Z'
+  //       }
+  //     ]);
+  //   }
+  // }, [user]);
+
+
+
+
+  const handleCreateProject = (prompt: string) => {
+    const newProject: Project = {
+      id: Date.now().toString(),
+      user_id: 'test',
+      title: generateProjectTitle(prompt),
+      slug: generateSlug(prompt),
+      status: 'draft',
+      framework: 'vanilla',
+      deployment_type: 'slug',
+      description: prompt.substring(0, 100) + '...',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    setCurrentProject(newProject);
+    setCurrentPrompt(prompt);
+    setProjects(prev => [newProject, ...prev]);
+   
+    
+  };
+
+  const handleOpenProject = (project: Project) => {
+    setCurrentProject(project);
+    setCurrentPage('workspace');
+  };
+
+  const handleEditProject = (project: Project) => {
+    setCurrentProject(project);
+    setCurrentPage('editor');
+  };
+
+  const generateProjectTitle = (prompt: string): string => {
+    const words = prompt.split(' ').slice(0, 3);
+    return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
+
+  const generateSlug = (prompt: string): string => {
+    return prompt
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .split(' ')
+      .slice(0, 3)
+      .join('-');
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPage}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+      <Router>
+      <Routes>
+        <Route path="/" element={<AuthPage/>} /> 
+        <Route
+          path="/tutorials"
+          element={
+            <PrivateRoute>
+              <Tutorial/>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <PrivateRoute>
+            <Projected/>
+            </PrivateRoute>
+          }
+        /> 
+        
+        <Route
+          path="/create-project"
+          element={
+            <PrivateRoute>
+            <CreateProject
+            onCreateProject={handleCreateProject}
+            />
+            </PrivateRoute>
+          }
+        />
+
+          <Route
+          path="/workspace"
+          element={
+            <PrivateRoute>
+            <Workspace/>
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+      
+    </Router>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export default App;

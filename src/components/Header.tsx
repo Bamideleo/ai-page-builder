@@ -1,0 +1,34 @@
+
+import { Plus, Search, Filter, BarChart3, Users, Globe, Settings, LogOut, Sparkles, Edit3, Eye, Calendar, ExternalLink, Trash2, Home, FolderOpen, CreditCard, TrendingUp, HelpCircle, Bell } from 'lucide-react';
+const Header = ({title}) => {
+  return (
+    <>
+     <header className="border-b  border-slate-50 backdrop-blur-sm bg-slate-50 sticky top-0 z-50">
+            <div className="px-6 py-4 flex justify-between items-center">
+              <div className="flex items-center space-x-4">
+                <h1 className="text-2xl font-bold text-gray-40">{title}</h1>
+                <div className="flex items-center space-x-2 text-sm text-gray-40">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span>All systems operational</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <button className="p-2 hover:bg-white/5 rounded-lg transition-colors relative">
+                  {/* <Bell className="w-5 h-5" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" /> */}
+                </button>
+                <div className="flex items-center space-x-2 text-sm text-gray-400">
+                  <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-xs font-semibold">
+                     Admin
+                  </div>
+                  <span className="capitalize"> Admin Plan</span>
+                </div>
+              </div>
+            </div>
+          </header> 
+    </>
+  )
+}
+
+export default Header
