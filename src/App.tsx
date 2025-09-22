@@ -11,6 +11,15 @@ import { User, Project, Page } from './types';
 import Tutorial from './components/Tutorial';
 
 import Projected from './components/Project';
+import Limitles from './components/Limitless';
+import Limitless from './components/Limitless';
+import MultipleIncome from './components/MultipleIncome';
+import FranchiseDashboard from './components/FranchiseDashboard';
+import ManageUsers from './components/ManageUsers';
+import Agency from './components/Agency';
+import OTOUpgradeTable from './components/OTOUpgradeTable';
+import { ForgetPassword } from './components/ForgetPassword';
+import ProfileSetting from './components/ProfileSetting';
 
 
 function App() {
@@ -150,6 +159,70 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/limitless"
+          element={
+            <PrivateRoute>
+              <Limitless/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/multiple-income"
+          element={
+            <PrivateRoute>
+              <MultipleIncome/>
+            </PrivateRoute>
+          }
+        />
+
+
+        <Route
+          path="/franchise"
+          element={
+            <PrivateRoute>
+              <FranchiseDashboard/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <PrivateRoute>
+              <ManageUsers/>
+            </PrivateRoute>
+          }
+        />
+
+       <Route
+          path="/agency"
+          element={
+            <PrivateRoute>
+              <Agency/>
+            </PrivateRoute>
+          }
+        />
+
+          <Route
+          path="/profile-settings"
+          element={
+            <PrivateRoute>
+              <ProfileSetting/>
+            </PrivateRoute>
+          }
+        />
+
+
+        <Route
+          path="/forget-password"
+          element={
+              <ForgetPassword/>
+          }
+        />
+
+
       </Routes>
       
     </Router>

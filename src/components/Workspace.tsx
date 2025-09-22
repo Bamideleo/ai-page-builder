@@ -485,7 +485,7 @@ export const Workspace = () => {
           </div>
 
           <div className="mb-6">
-            <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-slate-500 mb-4 uppercase tracking-wide">
               AI Processing Status
             </h3>
             <div className="space-y-3">
@@ -521,14 +521,14 @@ export const Workspace = () => {
                     {getStepIcon(step.status)}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <h4 className="text-sm font-medium text-white">{step.title}</h4>
+                        <h4 className="text-sm font-medium text-slate-500">{step.title}</h4>
                         {step.timestamp && (
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-slate-500">
                             {step.timestamp.toLocaleTimeString()}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-300 leading-relaxed">{step.message}</p>
+                      <p className="text-xs text-slate-500 leading-relaxed">{step.message}</p>
                       {step.error && (
                         <div className="mt-2 p-2 bg-red-500/20 border border-red-500/30 rounded text-xs text-red-300">
                           <strong>Error:</strong> {step.error}
@@ -545,27 +545,27 @@ export const Workspace = () => {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-slate-500 mb-4 uppercase tracking-wide">
               Project Details
             </h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-400">Framework:</span>
-                <span className="text-white capitalize">{generatedCode.framework}</span>
+                <span className="text-slate-500">Framework:</span>
+                <span className="text-slate-500 capitalize">{generatedCode.framework}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Status:</span>
+                <span className="text-slate-500">Status:</span>
                 <span className={isGenerating ? 'text-yellow-400' : 'text-green-400'}>
                   {isGenerating ? 'Generating...' : 'Ready'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Files:</span>
-                <span className="text-white">{fileStructure.length}</span>
+                <span className="text-slate-500">Files:</span>
+                <span className="text-slate-500">{fileStructure.length}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Size:</span>
-                <span className="text-white">~{Math.round((generatedCode.html.length + generatedCode.css.length + generatedCode.js.length) / 1024)}KB</span>
+                <span className="text-slate-500">Size:</span>
+                <span className="text-slate-500">~{Math.round((generatedCode.html.length + generatedCode.css.length + generatedCode.js.length) / 1024)}KB</span>
               </div>
             </div>
           </div>
@@ -574,14 +574,14 @@ export const Workspace = () => {
         {/* Center Panel - Code/Preview with File Structure */}
         <main className="flex-1 flex flex-col">
           {/* Tab Navigation */}
-          <div className="border-b border-white/10 bg-slate-800/30 p-4">
+          <div className="border-b border-white/10 bg-slate-50 p-4">
             <div className="flex space-x-1">
               <button
                 onClick={() => setActiveTab('code')}
                 className={`px-4 py-2 rounded-lg transition-all ${
                   activeTab === 'code'
                     ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    : 'text-slate-500 hover:text-black hover:bg-white/5'
                 }`}
               >
                 <Code className="w-4 h-4 inline mr-2" />
@@ -592,7 +592,7 @@ export const Workspace = () => {
                 className={`px-4 py-2 rounded-lg transition-all ${
                   activeTab === 'preview'
                     ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    : 'text-slate-500 hover:text-black hover:bg-white/5'
                 }`}
               >
                 <Eye className="w-4 h-4 inline mr-2" />

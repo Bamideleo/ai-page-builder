@@ -20,7 +20,7 @@ const Header = ({title}) => {
                 </button>
                 <div className="flex items-center space-x-2 text-sm text-gray-400">
                   <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-xs font-semibold">
-                     Admin
+                    <Users className='text-white text-xs'/>
                   </div>
                   <span className="capitalize"> Admin Plan</span>
                 </div>

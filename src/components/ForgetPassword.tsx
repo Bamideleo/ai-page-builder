@@ -2,17 +2,15 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2'
 import { loginApi } from "../api/auth";
 import { setToken } from "../utils/auth";
 import authBg from "../asset/login-bg.png";
 
 
-export const AuthPage = () => {
+export const ForgetPassword = () => {
 
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -48,13 +46,12 @@ export const AuthPage = () => {
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background */}
-      <div 
+  <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url('${authBg}')`
         }}
       />
-
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -103,39 +100,12 @@ export const AuthPage = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-slate-400 transition-all"
-                  placeholder="Enter your password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
+        
 
            
               <div className="flex justify-between items-center text-sm">
-                <label className="flex items-center space-x-2 text-slate-300">
-                  <input type="checkbox" className="rounded border-white/20 bg-white/5" />
-                  <span>Remember me</span>
-                </label>
-                <Link to="/forget-password" className="text-cyan-400 hover:text-cyan-300 transition-colors">
-                  Forgot password?
+                <Link to="/" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+                  Back to Login
                 </Link>
               </div>
          
@@ -150,20 +120,14 @@ export const AuthPage = () => {
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>Reset Password</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </motion.button>
-            
           </form>
-          <Link to="https://appclick.convertri.com/support" target='_blank' className="text-cyan-400 hover:text-cyan-300 transition-colors">
-                  Need Help? Contact Support Here
-        </Link>
         </motion.div>
       </motion.div>
-      
-     
     </div>
   );
 };
