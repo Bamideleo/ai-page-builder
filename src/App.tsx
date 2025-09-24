@@ -1,17 +1,13 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState} from 'react';
 import { BrowserRouter as Router, Routes, Route,} from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthPage } from './components/AuthPage';
-import { Dashboard } from './components/Dashboard';
 import { CreateProject } from './components/CreateProject';
 import { Workspace } from './components/Workspace';
-import { Editor } from './components/Editor';
-import { User, Project, Page } from './types';
+import { Project, Page } from './types';
 import Tutorial from './components/Tutorial';
-
 import Projected from './components/Project';
-import Limitles from './components/Limitless';
 import Limitless from './components/Limitless';
 import MultipleIncome from './components/MultipleIncome';
 import FranchiseDashboard from './components/FranchiseDashboard';
@@ -20,48 +16,14 @@ import Agency from './components/Agency';
 import OTOUpgradeTable from './components/OTOUpgradeTable';
 import { ForgetPassword } from './components/ForgetPassword';
 import ProfileSetting from './components/ProfileSetting';
+import DfyOffer from './components/DfyOffer';
 
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('auth');
-  const [user, setUser] = useState<User | null>(null);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [currentPrompt, setCurrentPrompt] = useState('');
   const [projects, setProjects] = useState<Project[]>([]);
-
-  // Mock projects data
-  // useEffect(() => {
-  //   if (user) {
-  //     setProjects([
-  //       {
-  //         id: '1',
-  //         user_id: user.id,
-  //         title: 'E-commerce Store',
-  //         slug: 'ecommerce-store',
-  //         status: 'published',
-  //         framework: 'react',
-  //         deployment_type: 'subdomain',
-  //         urls: { subdomain: 'store.aibuilder.app' },
-  //         description: 'Modern online store with cart and checkout',
-  //         created_at: '2025-01-15T10:00:00Z',
-  //         updated_at: '2025-01-15T10:00:00Z'
-  //       },
-  //       {
-  //         id: '2',
-  //         user_id: user.id,
-  //         title: 'Portfolio Website',
-  //         slug: 'portfolio-site',
-  //         status: 'draft',
-  //         framework: 'vanilla',
-  //         deployment_type: 'slug',
-  //         description: 'Personal portfolio showcasing my work',
-  //         created_at: '2025-01-14T15:30:00Z',
-  //         updated_at: '2025-01-15T09:15:00Z'
-  //       }
-  //     ]);
-  //   }
-  // }, [user]);
-
 
 
 
@@ -151,6 +113,17 @@ function App() {
           }
         />
 
+         <Route
+          path="/hot-dfy-offers"
+          element={
+            <PrivateRoute>
+            <DfyOffer/>
+            </PrivateRoute>
+          }
+        />
+
+
+
           <Route
           path="/workspace"
           element={
@@ -214,6 +187,14 @@ function App() {
           }
         />
 
+         <Route
+          path="/Upgrade"
+          element={
+            <PrivateRoute>
+              <OTOUpgradeTable/>
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="/forget-password"

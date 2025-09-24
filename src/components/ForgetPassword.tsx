@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom";
-import { loginApi } from "../api/auth";
+import { loginApi, RestPassword } from "../api/auth";
 import { setToken } from "../utils/auth";
 import authBg from "../asset/login-bg.png";
+import Swal from 'sweetalert2';
 
 
 export const ForgetPassword = () => {
 
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -27,11 +27,24 @@ export const ForgetPassword = () => {
 
     // Mock successful authentication
     try {
-      const res = await loginApi(formData.email, formData.password);
-      setToken(res.token);
-      navigate("/tutorials");
-    } catch (err) {
-      setError(err.message);
+      const res = await RestPassword(formData.email);
+      Swal.fire({
+           toast: true,
+           icon: "success",
+           title: res.message,
+           position: "top-end",
+           showConfirmButton: false,
+           timer: 3000,
+         });
+    } catch (err: any) {
+      Swal.fire({
+           toast: true,
+           icon: "error",
+           title: err.message,
+           position: "top-end",
+           showConfirmButton: false,
+           timer: 3000,
+         });
     }
     setIsLoading(false);
   };
@@ -79,7 +92,6 @@ export const ForgetPassword = () => {
         >
        
               {/* for error message */}
-               {error && <p style={{ color: "red" }}>{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
           
             <div>

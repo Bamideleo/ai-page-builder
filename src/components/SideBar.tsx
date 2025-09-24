@@ -3,15 +3,15 @@ import { motion, AnimatePresence} from 'framer-motion';
 import { Link, useNavigate, useLocation} from "react-router-dom";
 import {ChevronDown, Plus, Search, Filter, BarChart3, Users, Globe, Settings, LogOut, Sparkles, Edit3, Eye, Calendar, ExternalLink, Trash2, Home, FolderOpen, CreditCard, TrendingUp, HelpCircle, Bell, Flame, ArrowDownUp, DollarSign, BanknoteIcon, Workflow, UserPlus, HandMetal, Activity, WalletIcon, Gift, ArrowUpFromLine, User, Cog } from 'lucide-react';
 import { logout } from "../utils/auth";
+import {isUserDetails} from "../utils/auth";
 
 const SideBar = () => {
     const [activeMenuItem, setActiveMenuItem] = useState('tutorial');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [user, setUser] = useState(isUserDetails);
     const navigate = useNavigate();
- 
+  
 
-
-      
 const handleLogout = () =>  {
     logout();
     navigate("/");
@@ -84,8 +84,9 @@ const handleLogout = () =>  {
                 </motion.button>
                 </Link>
 
-
-                 <div className="py-3">
+            {user.oto_2 === 1 &&
+          
+        <div className="py-3">
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -138,7 +139,7 @@ const handleLogout = () =>  {
                Marketplace
               </Link>
               <Link
-                to="/projects/archive"
+                to="/hot-dfy-offers"
                 onClick={() => setActiveMenuItem("archived-projects")}
                 className={`block px-3 py-2 rounded-lg text-sm ${
                   activeMenuItem === "archived-projects"
@@ -146,15 +147,15 @@ const handleLogout = () =>  {
                     : "text-slate-400 hover:text-white hover:bg-white/5"
                 }`}
               >
-               DFY Offer
+               Hot DFY Offer
               </Link>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      }
 
-
-
+                {user.oto_5 === 1 &&
                  <Link to="/limitless" 
                 onClick={() =>setActiveMenuItem('traffic')}
                 className='py-3'>
@@ -177,7 +178,9 @@ const handleLogout = () =>  {
                   <span className="font-medium">Limitless</span>
                 </motion.button>
                 </Link>
+                }
 
+                {user.oto_4 === 1 &&
                  <Link to="https://profit.mysuperaiapp.com/login" 
                  target='_blank'
                 onClick={() =>setActiveMenuItem('profit')}
@@ -201,9 +204,9 @@ const handleLogout = () =>  {
                   <span className="font-medium">Swift Profit</span>
                 </motion.button>
                 </Link>
+                }
 
-
-
+                {user.oto_8 === 1 &&
                  <Link to="/multiple-income" 
                 onClick={() =>setActiveMenuItem('income')}
                 className='py-3'>
@@ -226,9 +229,9 @@ const handleLogout = () =>  {
                   <span className="font-medium">Multiple Income</span>
                 </motion.button>
                 </Link>
+                }
 
-
-
+                {user.oto_3 === 1 &&
                  <Link to="https://profit.mysuperaiapp.com/login" 
                  target='_blank'
                 onClick={() =>setActiveMenuItem('automation')}
@@ -252,8 +255,9 @@ const handleLogout = () =>  {
                   <span className="font-medium">Automation</span>
                 </motion.button>
                 </Link>
+                }
 
-
+                {user.oto_6 === 1 &&
                  <Link to="/agency" 
                 onClick={() =>setActiveMenuItem('agency')}
                 className='py-3'>
@@ -276,7 +280,8 @@ const handleLogout = () =>  {
                   <span className="font-medium">Agency</span>
                 </motion.button>
                 </Link>
-
+                  }
+                  {user.oto_7 === 1 &&
                  <Link to="/franchise" 
                 onClick={() =>setActiveMenuItem('franchise')}
                 className='py-3'>
@@ -300,7 +305,7 @@ const handleLogout = () =>  {
                   <span className="font-medium">Franchise</span>
                 </motion.button>
                 </Link>
-
+                  }
                  <Link to="/Bonus" 
                 onClick={() =>setActiveMenuItem('Bonus')}
                 target='_blank'
@@ -348,6 +353,7 @@ const handleLogout = () =>  {
                 </motion.button>
                 </Link>
 
+                {user.role === 'admin' &&
                   <Link to="/users" 
                 onClick={() =>setActiveMenuItem('user')}
                 className='py-3'>
@@ -370,6 +376,8 @@ const handleLogout = () =>  {
                   <span className="font-medium">Users</span>
                 </motion.button>
                 </Link>
+                }
+                
 
                    <Link to="/profile-settings" 
                 onClick={() =>setActiveMenuItem('profile')}
@@ -404,8 +412,7 @@ const handleLogout = () =>  {
               <Users/>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate"> Admin</p>
-                <p className="text-xs text-slate-400 capitalize"> Admin Plan</p>
+                <p className="text-xs text-slate-400 capitalize">{user.name}</p>
               </div>
               <button 
                onClick={handleLogout}

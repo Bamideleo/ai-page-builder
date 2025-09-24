@@ -1,6 +1,31 @@
+import { useEffect, useState } from 'react';
+import {Users } from 'lucide-react';
+import {isUserDetails, setUserData, startAutoPurge} from "../utils/auth";
+import { getUserDetails } from '../api/auth';
 
-import { Plus, Search, Filter, BarChart3, Users, Globe, Settings, LogOut, Sparkles, Edit3, Eye, Calendar, ExternalLink, Trash2, Home, FolderOpen, CreditCard, TrendingUp, HelpCircle, Bell } from 'lucide-react';
-const Header = ({title}) => {
+
+interface HeaderProps {
+  title: string;
+}
+const Header = ({title}:HeaderProps) => {
+const [user, setUser] = useState(isUserDetails);
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const res = await getUserDetails();
+      setUserData(res.user);
+      setUser(isUserDetails);
+    } catch (err) {
+      console.error("Failed to fetch user details:", err);
+    }
+  };
+  fetchUser();
+ startAutoPurge();
+}, []);
+
+
+
+
   return (
     <>
      <header className="border-b  border-slate-50 backdrop-blur-sm bg-slate-50 sticky top-0 z-50">
@@ -22,7 +47,7 @@ const Header = ({title}) => {
                   <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-xs font-semibold">
                     <Users className='text-white text-xs'/>
                   </div>
-                  <span className="capitalize"> Admin Plan</span>
+                  <span className="capitalize">{user.name}</span>
                 </div>
               </div>
             </div>

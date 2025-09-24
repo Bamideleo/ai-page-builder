@@ -9,7 +9,7 @@ import { setUserData } from "../utils/auth";
 import authBg from "../asset/login-bg.png";
 
 
-export const AuthPage = () => {
+export const RestPassword = () => {
 
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -165,15 +165,7 @@ export const AuthPage = () => {
             </div>
 
            
-              <div className="flex justify-between items-center text-sm">
-                <label className="flex items-center space-x-2 text-slate-300">
-                  <input type="checkbox" className="rounded border-white/20 bg-white/5" />
-                  <span>Remember me</span>
-                </label>
-                <Link to="/forget-password" className="text-cyan-400 hover:text-cyan-300 transition-colors">
-                  Forgot password?
-                </Link>
-              </div>
+              
          
             <motion.button
               type="submit"
@@ -186,16 +178,14 @@ export const AuthPage = () => {
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>Reset Password</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </motion.button>
             
           </form>
-          <Link to="https://appclick.convertri.com/support" target='_blank' className="text-cyan-400 hover:text-cyan-300 transition-colors">
-                  Need Help? Contact Support Here
-        </Link>
+          
         </motion.div>
       </motion.div>
       
