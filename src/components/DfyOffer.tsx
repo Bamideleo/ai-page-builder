@@ -39,7 +39,7 @@ const DfyOffer = () => {
     {
       id: 6,
       name: "Proto",
-      image: "http://myzendly.com/assets/dashboard/image/proto.png",
+      image: "https://api.humanaiapp.com/public/images/proto.png",
       affiliateLink: "https://warriorplus.com/as/o/zyqgrm"
     },
     {
@@ -55,7 +55,7 @@ const DfyOffer = () => {
    Swal.fire({
          toast: true,
          icon: "success",
-         title: 'Link Copyed',
+         title: 'Link Copied',
          position: "top-end",
          showConfirmButton: false,
          timer: 3000,

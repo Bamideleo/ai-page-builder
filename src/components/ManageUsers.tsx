@@ -39,16 +39,18 @@ const ManageUsers = () => {
  
   });
 
-  useEffect(()=>{
- const fetchUsers = async () => {
+  const fetchUsers = async () => {
     try {
       const res = await allUsers();
       setUsers(res.users);
     } catch (err) {
       console.error("Failed to fetch users details:", err);
     }
-  setIsLoading(false);
+  ;
   };
+
+  useEffect(()=>{
+  setIsLoading(false)
   fetchUsers();
   }, []);
 
@@ -247,7 +249,7 @@ const handleAddUser = async (e: React.FormEvent) => {
       timer: 3000,
     });
   }
-  navigate('/tutorials');
+  fetchUsers();
   };
 
   return (

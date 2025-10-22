@@ -31,16 +31,17 @@ const Agency = () => {
     oto1: 0,
   });
 
-  useEffect(()=>{
- const fetchUsers = async () => {
+   const fetchUsers = async () => {
     try {
       const res = await getAgency();
       setUsers(res.users);
     } catch (err) {
       console.error("Failed to fetch users details:", err);
     }
-  setIsLoading(false);
   };
+
+  useEffect(()=>{
+  setIsLoading(false);
   fetchUsers();
   }, []);
 
@@ -228,7 +229,7 @@ const handleAddUser = async (e: React.FormEvent) => {
       timer: 3000,
     });
   }
-  navigate('/tutorials');
+  fetchUsers();
   };
 
   return (
@@ -243,7 +244,7 @@ const handleAddUser = async (e: React.FormEvent) => {
       <div className="max-w-7xl mx-auto">
     
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold text-slate-500">Yours Users</h1>
+          <h1 className="text-2xl font-semibold text-slate-500">Agency Users</h1>
           <button
             onClick={() => setOpen(true)}
             
@@ -354,7 +355,8 @@ const handleAddUser = async (e: React.FormEvent) => {
               )))
             : 
           (
-          <li className="p-2 text-gray-500">No results found</li>
+          
+          <p className="p-2 text-gray-500 text-center">No results found</p>
           )
             }
             </tbody>
@@ -513,7 +515,7 @@ const handleAddUser = async (e: React.FormEvent) => {
                           </div>
                         </div>
                         <span className="ml-2 text-sm text-gray-700">
-                          OTO {i + 1}
+                          Unlimited
                         </span>
                       </label>
                     );
@@ -649,7 +651,7 @@ const handleAddUser = async (e: React.FormEvent) => {
           {selectedUser?.oto_1 === 1 && <div className="w-2 h-2 bg-white rounded-full"></div>}
         </div>
       </div>
-      <span className="ml-2 text-sm text-gray-700">OTO 1</span>
+      <span className="ml-2 text-sm text-gray-700">Unlimited</span>
     </label>
 
               </div>

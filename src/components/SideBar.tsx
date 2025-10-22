@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence} from 'framer-motion';
 import { Link, useNavigate, useLocation} from "react-router-dom";
-import {ChevronDown, Plus, Search, Filter, BarChart3, Users, Globe, Settings, LogOut, Sparkles, Edit3, Eye, Calendar, ExternalLink, Trash2, Home, FolderOpen, CreditCard, TrendingUp, HelpCircle, Bell, Flame, ArrowDownUp, DollarSign, BanknoteIcon, Workflow, UserPlus, HandMetal, Activity, WalletIcon, Gift, ArrowUpFromLine, User, Cog } from 'lucide-react';
+import {ChevronDown, Plus, Search, Filter, BarChart3, Users, Globe, Settings, LogOut, Sparkles, Edit3, Eye, Calendar, ExternalLink, Trash2, Home, FolderOpen, CreditCard, TrendingUp, HelpCircle, Bell, Flame, ArrowDownUp, DollarSign, BanknoteIcon, Workflow, UserPlus, HandMetal, Activity, WalletIcon, Gift, ArrowUpFromLine, User, Cog, HomeIcon, MartiniIcon, StoreIcon, VideoIcon } from 'lucide-react';
 import { logout } from "../utils/auth";
 import {isUserDetails} from "../utils/auth";
 
@@ -55,7 +55,7 @@ const handleLogout = () =>  {
                       ? `bg-gradient-to-r from-cyan-400 to-blue-500` 
                       : 'bg-white/5'
                   }`}>
-                    <Home className="w-4 h-4" />
+                    <VideoIcon className="w-4 h-4" />
                   </div>
                   <span className="font-medium">Tutorial</span>
                 </motion.button>
@@ -81,6 +81,31 @@ const handleLogout = () =>  {
                     <FolderOpen className="w-4 h-4" />
                   </div>
                   <span className="font-medium">Projects</span>
+                </motion.button>
+                </Link>
+
+                
+                <Link to="https://market.myrevioapp.com/" 
+                target='_blank'
+                onClick={() =>setActiveMenuItem('market')}
+                className='py-3'>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                    activeMenuItem === 'projects'
+                      ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-white shadow-lg shadow-cyan-500/10'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    activeMenuItem === 'projects'
+                      ? `bg-gradient-to-r from-purple-400 to-pink-500` 
+                      : 'bg-white/5'
+                  }`}>
+                    <StoreIcon className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium">Marketplace</span>
                 </motion.button>
                 </Link>
 
@@ -128,7 +153,8 @@ const handleLogout = () =>  {
               className="ml-12 mt-2 space-y-2 overflow-hidden"
             >
               <Link
-                to="/projects/active"
+                to="https://market.myrevioapp.com/"
+                target='_blank'
                 onClick={() => setActiveMenuItem("active-projects")}
                 className={`block px-3 py-2 rounded-lg text-sm ${
                   activeMenuItem === "active-projects"
@@ -408,9 +434,7 @@ const handleLogout = () =>  {
           {/* User Profile */}
           <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
             <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-sm font-semibold">
-              <Users/>
-              </div>
+             <img width="25" height="25" src="https://img.icons8.com/3d-fluency/94/user-male-circle.png" alt="user-male-circle"/>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-slate-400 capitalize">{user.name}</p>
               </div>

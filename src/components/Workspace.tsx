@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Play, Pause, Code, Eye, Download, Share, Settings, Maximize2, ExternalLink, Folder, FolderOpen, File, AlertTriangle, CheckCircle, Clock, RefreshCw, Edit3, Send, Plus } from 'lucide-react';
 import { aiService } from '../lib/ai';
 import { Link, useLocation, useNavigate} from "react-router-dom";
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import Swal from 'sweetalert2';
+import Typewriter from "typewriter-effect";
+import { editWebsite, publishWeb } from '../api/auth';
 
 
 
@@ -26,37 +31,57 @@ interface FileNode {
 
 export const Workspace = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { project, prompt } = location.state || {};
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
   const [processingSteps, setProcessingSteps] = useState<ProcessingStep[]>([]);
   const [isGenerating, setIsGenerating] = useState(true);
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
+  const [isTweakPrompt, setIsTweakPrompt] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [iseditLoading, setEditIsLoading] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState(prompt);
   const [newPrompt, setNewPrompt] = useState('');
+  const [newTitle, setNewTitle] = useState('');
+  const [currentTitle, setCurrentTitle] = useState(project.title);
   const [generatedCode, setGeneratedCode] = useState({
     html: '',
     css: '',
     js: '',
-    framework: 'vanilla'
+    framework: ''
   });
+  
+
   const [fileStructure, setFileStructure] = useState<FileNode[]>([]);
   const [selectedFile, setSelectedFile] = useState<string>('');
   const [previewUrl, setPreviewUrl] = useState<string>('');
+  const effectCalled = useRef(false);
 
 
   useEffect(() => {
+    if (effectCalled.current) return; 
+    effectCalled.current = true;
+     simulate();
     generateProject(currentPrompt);
   }, []);
 
-  const generateProject = async (promptText: string) => {
+
+
+
+
+
+
+
+  const  simulate = async () => {
     setIsGenerating(true);
-    setProcessingSteps([]);
     
+    setProcessingSteps([]);
     const steps = [
       { id: '1', title: 'Analyzing Prompt', message: 'Understanding your requirements and project scope...', status: 'processing' as const },
       { id: '2', title: 'Planning Architecture', message: 'Designing the optimal project structure and components...', status: 'pending' as const },
-      { id: '3', title: 'Generating HTML', message: 'Creating semantic HTML structure...', status: 'pending' as const },
-      { id: '4', title: 'Styling with CSS', message: 'Applying responsive styles and animations...', status: 'pending' as const },
+      { id: '3', title: 'Generating Code', message: 'Creating semantic code structure...', status: 'pending' as const },
+      { id: '4', title: 'Styling Code', message: 'Applying responsive styles and animations...', status: 'pending' as const },
       { id: '5', title: 'Adding JavaScript', message: 'Implementing interactive functionality...', status: 'pending' as const },
       { id: '6', title: 'Optimizing Performance', message: 'Minifying code and optimizing assets...', status: 'pending' as const },
       { id: '7', title: 'Final Review', message: 'Running quality checks and validation...', status: 'pending' as const }
@@ -64,7 +89,7 @@ export const Workspace = () => {
 
     setProcessingSteps(steps);
 
-    try {
+       try {
       for (let i = 0; i < steps.length; i++) {
         // Update current step to processing
         setProcessingSteps(prev => prev.map(step => 
@@ -74,7 +99,7 @@ export const Workspace = () => {
         ));
 
         // Simulate processing time
-        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+        await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 5000));
 
         // Randomly simulate an error for demonstration
         if (i === 3 && Math.random() < 0.3) {
@@ -112,10 +137,26 @@ export const Workspace = () => {
           ));
         }
       }
+      // setIsGenerating(false);
+    } catch (error) {
+      console.error('Generation failed:', error);
+      setProcessingSteps(prev => prev.map(step => 
+        step.status === 'processing' 
+          ? { ...step, status: 'error', error: 'Generation failed', timestamp: new Date() }
+          : step
+      ));
+      setIsGenerating(false);
+    }
 
+  }
+
+  const generateProject = async (promptText: string, type=0, html=null, css=null, js=null) => {
+    setIsGenerating(true);
+    try {
       // Generate the actual code
-      const result = await aiService.generateProject(promptText);
-      setGeneratedCode(result);
+  const result = await aiService.generateProject(promptText, type, html,css, js); 
+  const files = result.files;
+      setGeneratedCode(files);
 
       // Create file structure
       const structure: FileNode[] = [
@@ -129,7 +170,7 @@ export const Workspace = () => {
               name: 'index.html',
               type: 'file',
               path: 'src/index.html',
-              content: result.html
+              content:files.html
             },
             {
               name: 'styles',
@@ -141,7 +182,7 @@ export const Workspace = () => {
                   name: 'main.css',
                   type: 'file',
                   path: 'src/styles/main.css',
-                  content: result.css
+                  content:files.css
                 },
                 {
                   name: 'components.css',
@@ -161,7 +202,7 @@ export const Workspace = () => {
                   name: 'main.js',
                   type: 'file',
                   path: 'src/scripts/main.js',
-                  content: result.js
+                  content: files.js
                 },
                 {
                   name: 'utils.js',
@@ -215,7 +256,7 @@ export const Workspace = () => {
           name: 'README.md',
           type: 'file',
           path: 'README.md',
-          content: `# ${project.title}\n\n${promptText}\n\nGenerated with AIBuilder\n\n## Getting Started\n\n1. Open index.html in your browser\n2. Or run \`npm start\` for live server\n\n## Features\n\n- Responsive design\n- Modern CSS\n- Interactive JavaScript\n- SEO optimized`
+          content: `# ${currentTitle}\n\n${promptText}\n\nGenerated with AIBuilder\n\n## Getting Started\n\n1. Open index.html in your browser\n2. Or run \`npm start\` for live server\n\n## Features\n\n- Responsive design\n- Modern CSS\n- Interactive JavaScript\n- SEO optimized`
         }
       ];
 
@@ -223,7 +264,7 @@ export const Workspace = () => {
       setSelectedFile('src/index.html');
       
       // Create preview URL
-      const blob = new Blob([createPreviewHTML(result)], { type: 'text/html' });
+      const blob = new Blob([createPreviewHTML(files)], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       setPreviewUrl(url);
       
@@ -242,9 +283,18 @@ export const Workspace = () => {
   const handlePromptSubmit = async () => {
     if (!newPrompt.trim()) return;
     
-    setCurrentPrompt(currentPrompt + '\n\nAdditional request: ' + newPrompt);
+    setCurrentPrompt(newPrompt);
     setIsEditingPrompt(false);
-    await generateProject(currentPrompt + '\n\nAdditional request: ' + newPrompt);
+    await generateProject(newPrompt);
+    setNewPrompt('');
+  };
+
+  const handleTweakPromptSubmit = async () => {
+    if (!newPrompt.trim()) return;
+    const type = 1;
+    setCurrentPrompt(newPrompt);
+    setIsEditingPrompt(false);
+    await generateProject(newPrompt, type, generatedCode.html, generatedCode.css, generatedCode.js,);
     setNewPrompt('');
   };
 
@@ -252,6 +302,16 @@ export const Workspace = () => {
     setIsEditingPrompt(true);
     setNewPrompt('');
   };
+
+  const handleTweakPrompt = () => {
+     setIsTweakPrompt(true);
+    setNewPrompt('');
+  };
+
+  const handleEditTitle = () =>{
+    setIsEditingTitle(true);
+    setNewTitle('');
+  }
 
   const createPreviewHTML = (code: any) => {
     return `
@@ -335,20 +395,123 @@ export const Workspace = () => {
     ));
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
+
+    const zip = new JSZip();
+
     const files = {
       'index.html': generatedCode.html,
       'styles.css': generatedCode.css,
       'script.js': generatedCode.js,
-      'README.md': `# ${project.title}\n\nGenerated with AIBuilder\n\nPrompt: ${prompt}`
+      'README.md': `# ${currentTitle}\n\nGenerated with AIBuilder\n\nPrompt: ${prompt}`
     };
 
-    console.log('Exporting project files:', files);
-    alert('Project exported successfully! (In production, this would download a ZIP file)');
+    // Add each file to the ZIP
+    Object.entries(files).forEach(([fileName, content]) => {
+      zip.file(fileName, content);
+    });
+
+      try {
+      // Generate the ZIP file asynchronously
+      const content = await zip.generateAsync({ type: 'blob' });
+      
+      // Trigger download using FileSaver
+      saveAs(content, `${currentTitle || 'project'}.zip`);
+      // console.log('Exporting project files:', files);
+       Swal.fire({
+                 toast: true,
+                 icon: "success",
+                 title: 'Project exported successfully!',
+                 position: "top-end",
+                 showConfirmButton: false,
+                 timer: 3000,
+               });
+    } catch (error) {
+      console.error('Error generating ZIP file:', error);
+          Swal.fire({
+                 toast: true,
+                 icon: "error",
+                 title: 'Failed to export project. Please try again.',
+                 position: "top-end",
+                 showConfirmButton: false,
+                 timer: 3000,
+               });
+    }
+
+    // console.log('Exporting project files:', files);
+    // alert('Project exported successfully! (In production, this would download a ZIP file)');
   };
 
-  const handlePublish = () => {
-    alert('Publishing options would open here');
+  const handleEdit = async () => {
+     setEditIsLoading(true);
+     // Simulate API call
+       try {
+         const res = await editWebsite(generatedCode.html, generatedCode.css, generatedCode.js, currentTitle, prompt);
+         if(res.status === 400){
+           Swal.fire({
+                    toast: true,
+                    icon: "success",
+                    title: res.message,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                  });
+         }else{
+        
+           window.open('http://localhost/Vvveb/admin/', '_blank');
+         }
+         
+         
+      setEditIsLoading(false); 
+       } catch (err: any) {
+         console.error("Failed to fetch project:", err);
+       }
+  
+
+  }
+
+  const handlePublish = async () => {
+    setIsLoading(true);
+   
+       // Simulate API call
+       try {
+         const res = await publishWeb(generatedCode.html, generatedCode.css, generatedCode.js, currentTitle, prompt);
+         
+         if(res.status === 400 ){
+           Swal.fire({
+              toast: true,
+              icon: "success",
+              title: res.message,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+            });
+         }
+         else{
+          Swal.fire({
+              toast: true,
+              icon: "success",
+              title: res.message,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+            });
+
+         navigate('/projects');
+         }
+
+       } catch (err: any) {
+         Swal.fire({
+              toast: true,
+              icon: "error",
+              title: err.message,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+            });
+       }
+       setIsLoading(false);
+      
   };
 
   const openPreviewInNewTab = () => {
@@ -369,6 +532,11 @@ export const Workspace = () => {
         return <Clock className="w-4 h-4 text-slate-400" />;
     }
   };
+
+  const handleUpdateTitle = (newTitle: string) =>{
+  setCurrentTitle(newTitle);
+   setNewTitle(newTitle);
+  }
   return (
     <div className="min-h-screen bg-slate-900 text-white flex flex-col">
       {/* Header */}
@@ -380,8 +548,31 @@ export const Workspace = () => {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-lg font-semibold">{project.title}</h1>
-            <p className="text-sm text-slate-400">Workspace</p>
+          <div className="flex items-center justify-between">
+  <h1 className="text-lg font-semibold">
+    Title {currentTitle}
+  </h1>
+  <button
+    onClick={handleEditTitle}
+    className="p-1 hover:bg-white rounded transition-colors border-slate-50"
+  >
+    <Edit3 className="w-4 h-4 text-slate-500 hover:text-black" />
+  </button>
+</div>
+
+{isEditingTitle ? (
+      <input
+                  type="text"
+                  name="name"
+                  value={newTitle}
+                    onChange={(e) => handleUpdateTitle(e.target.value)}
+                    placeholder="Add new title..."
+                    className="w-full px-3 py-2 bg-white/5 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-slate-500 placeholder-slate-500 resize-none text-sm"
+                 
+                /> ):""
+}      
+    <p className="text-sm text-slate-400">Workspace</p>
+        
           </div>
         </div>
 
@@ -396,25 +587,41 @@ export const Workspace = () => {
             </button>
           )}
           <button 
+          onClick={()=> handleEdit()}
+           disabled={iseditLoading}
             className="flex items-center space-x-2 px-4 py-2 border border-white/20 rounded-lg hover:bg-white/5 transition-colors"
           >
+          {iseditLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+              <>
             <Settings className="w-4 h-4" />
             <span>Edit</span>
+            </>
+              )}
           </button>
-          {/* <button 
+          <button 
             onClick={handleExport}
             className="flex items-center space-x-2 px-4 py-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
           >
             <Download className="w-4 h-4" />
             <span>Export</span>
-          </button> */}
-          {/* <button 
+          </button>
+          <button 
             onClick={handlePublish}
+            disabled={isLoading}
             className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center space-x-2"
           >
+            {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+              <>
             <Share className="w-4 h-4" />
             <span>Publish</span>
-          </button> */}
+            </>
+              )
+              }
+          </button>
         </div>
       </header>
 
@@ -481,6 +688,53 @@ export const Workspace = () => {
                   </button>
                 )}
               </div>
+            )}
+
+
+               {isTweakPrompt ? (
+              <>
+              <div className="space-y-3 mt-3">
+                <div className="relative">
+                  <textarea
+                    value={newPrompt}
+                    onChange={(e) => setNewPrompt(e.target.value)}
+                    placeholder="Add additional requirements or modifications..."
+                    className="w-full h-24 px-4 py-3 bg-white/5 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-slate-500 placeholder-slate-500 resize-none text-sm"
+                  />
+                  <div className="flex justify-end space-x-2 mt-3">
+                    <button
+                      onClick={() => setIsTweakPrompt(false)}
+                      className="px-4 py-2 text-sm border border-gray-400 rounded-lg hover:bg-black/25 hover:border-bg-black/25  hover:text-white transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleTweakPromptSubmit}
+                      disabled={!newPrompt.trim()}
+                      className="px-4 py-2 text-sm text-white bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg hover:shadow-lg hover:shadow-cyan-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                    >
+                      <Send className="w-4 h-4" />
+                      <span>Update</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+             </> 
+            ) : (
+              <>
+              <div className="space-y-3 mt-3">
+                {!isGenerating && (
+                  <button
+                    onClick={handleTweakPrompt}
+                    className="w-full p-3 border border-dashed border-gray-400 rounded-lg hover:bg-black/25 hover:border-bg-black/25   transition-colors flex items-center justify-center space-x-2 text-slate-500 hover:text-white"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Tweak/Update Prompt</span>
+                  </button>
+                )}
+              </div>
+              </> 
             )}
           </div>
 
@@ -625,6 +879,7 @@ export const Workspace = () => {
                         <p className="text-sm text-slate-400 mt-2">
                           {processingSteps.find(s => s.status === 'processing')?.message || 'Processing...'}
                         </p>
+                      
                       </div>
                     </div>
                   ) : (

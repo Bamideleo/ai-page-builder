@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react';
+import { Sparkles, Mail, Lock, Eye, EyeOff, User, ArrowRight, Key } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
-import { loginApi } from "../api/auth";
+import { loginApi, setNewPassword } from "../api/auth";
 import { setToken, setWithExpiry } from "../utils/auth";
 import { setUserData } from "../utils/auth";
 import authBg from "../asset/login-bg.png";
 
 
-export const RestPassword = () => {
+export const ResetPassword = () => {
 
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ token?: string; password?: string }>({});
   const [formData, setFormData] = useState({
-    email: '',
+    token: '',
     password: '',
   });
 
@@ -29,11 +29,23 @@ export const RestPassword = () => {
     //API call
 
     try {
-      const res = await loginApi(formData.email, formData.password);
-      setToken(res.token);
-      setUserData(res.user);
-      setWithExpiry();
-      navigate("/tutorials");
+      const res = await setNewPassword(formData.token, formData.password);
+       const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+      }
+      });
+      Toast.fire({
+      icon: "success",
+      title: res.message
+      });
+    
 
     } catch (err: any) {
       const Toast = Swal.mixin({
@@ -64,13 +76,11 @@ export const RestPassword = () => {
   };
 
    const validateForm = () => {
-    const newErrors: { email?: string; password?: string } = {};
+    const newErrors: { token?: string; password?: string } = {};
 
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
-    }
+    if (!formData.token) {
+      newErrors.token = "Token is required";
+    } 
 
     if (!formData.password) {
       newErrors.password = "Password is required";
@@ -123,25 +133,26 @@ export const RestPassword = () => {
           
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
-                Email Address
+                Token
               </label>
+              
               <div className="relative">
-                <Mail className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <Key className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
+                  type="text"
+                  name="token"
+                  value={formData.token}
                   onChange={handleInputChange}
                   className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-slate-400 transition-all"
-                  placeholder="Enter your email"
+                  placeholder="Enter your token"
                 />
-                 {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
+                 {errors.token && <p className="text-red-400 text-sm mt-1">{errors.token}</p>}
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
-                Password
+                New Password
               </label>
               <div className="relative">
                 <Lock className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
@@ -151,7 +162,7 @@ export const RestPassword = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-slate-400 transition-all"
-                  placeholder="Enter your password"
+                  placeholder="Enter your new password"
                 />
                 <button
                   type="button"
@@ -166,6 +177,28 @@ export const RestPassword = () => {
 
            
               
+               <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Confirm New Password
+              </label>
+              <div className="relative">
+                <Lock className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="cpassword"
+                  className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-slate-400 transition-all"
+                  placeholder="Confirm your new password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
          
             <motion.button
               type="submit"

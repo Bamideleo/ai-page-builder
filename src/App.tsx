@@ -17,6 +17,8 @@ import OTOUpgradeTable from './components/OTOUpgradeTable';
 import { ForgetPassword } from './components/ForgetPassword';
 import ProfileSetting from './components/ProfileSetting';
 import DfyOffer from './components/DfyOffer';
+import { ResetPassword } from './components/ResetPassword';
+import Template from './components/Template';
 
 
 function App() {
@@ -200,6 +202,21 @@ function App() {
           path="/forget-password"
           element={
               <ForgetPassword/>
+          }
+        />
+
+        <Route
+          path="/reset-password"
+          element={
+              <ResetPassword/>
+          }
+        />
+
+
+      <Route
+          path="/template"
+          element={
+              <Template/>
           }
         />
 

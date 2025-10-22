@@ -1,7 +1,8 @@
 
+const backend_url = 'http://localhost:8000';
 export const loginApi = async (email: string, password: string) => {
   try {
-    const response = await fetch("http://localhost:8000/api/login", {
+    const response = await fetch(`${backend_url}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,9 +26,9 @@ export const loginApi = async (email: string, password: string) => {
   }
 };
 
-export const RestPassword = async (email: string) =>{
+export const ResetPassword = async (email: string) =>{
  try {
-    const response = await fetch("http://localhost:8000/api/reset", {
+    const response = await fetch(`${backend_url}/api/reset`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,12 +52,41 @@ export const RestPassword = async (email: string) =>{
   } 
 }
 
+export const setNewPassword = async (token: string, password: string) =>{
+
+   try {
+    const response = await fetch(`${backend_url}/api/password/reset`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({token, password}),
+    });
+
+    if (!response.ok) {
+      // Extract error message from backend
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Request failed");
+    }
+
+    // Success: parse JSON
+    const data = await response.json();
+    return data; // { token: "...", user: {...} }
+  } catch (error) {
+   
+    throw error;
+  } 
+
+
+}
+
 
 export const getUserDetails = async () => {
   
     try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch("http://localhost:8000/api/profile", {
+      const response = await fetch(`${backend_url}/api/profile`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +112,7 @@ export const updateProfile = async (name: string, email: string) => {
 
   try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch("http://localhost:8000/api/profile", {
+      const response = await fetch(`${backend_url}/api/profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,7 +137,7 @@ export const updateProfile = async (name: string, email: string) => {
 export const updatePassword = async (current_password: string, password: string) =>{
     try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch("http://localhost:8000/api/change-password", {
+      const response = await fetch(`${backend_url}/api/change-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -132,7 +162,7 @@ export const updatePassword = async (current_password: string, password: string)
 export const allUsers = async () => {
       try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch("http://localhost:8000/api/users", {
+      const response = await fetch(`${backend_url}/api/users`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -156,7 +186,7 @@ export const allUsers = async () => {
 export const CreateUser = async (name: any, email: any, password='', oto1:any, oto2 :any, oto3:any, oto4:any, oto5:any, oto6:any, oto7:any, oto8:any,) =>{
 try {
      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/create-users`, {
+      const response = await fetch(`${backend_url}/api/create-users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -181,7 +211,7 @@ try {
 export const editUser = async (id: string) => {
       try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch(`http://localhost:8000/api/edituser/${id}`, {
+      const response = await fetch(`${backend_url}/api/edituser/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -205,7 +235,7 @@ export const editUser = async (id: string) => {
 export const updateUser = async (id:any, name:any, email:any, oto1:any, oto2 :any, oto3:any, oto4:any, oto5:any, oto6:any, oto7:any, oto8:any, password=null) => {
       try {
      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/update-user/${id}`, {
+      const response = await fetch(`${backend_url}/api/update-user/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -230,7 +260,7 @@ export const updateUser = async (id:any, name:any, email:any, oto1:any, oto2 :an
 export const deleteUser = async (id: any) =>{
 try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch(`http://localhost:8000/api/delete-user/${id}`, {
+      const response = await fetch(`${backend_url}/api/delete-user/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -255,7 +285,7 @@ try {
 export const getAgency = async () => {
     try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch("http://localhost:8000/api/agency", {
+      const response = await fetch(`${backend_url}/api/agency`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -279,7 +309,7 @@ export const getAgency = async () => {
 export const CreateAgency = async (name: any, email: any, password='', oto1:any,) => {
  try {
      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/add-agency`, {
+      const response = await fetch(`${backend_url}/api/add-agency`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -304,7 +334,7 @@ export const CreateAgency = async (name: any, email: any, password='', oto1:any,
 export const editAgency = async (id: string) => {
       try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch(`http://localhost:8000/api/agency/${id}`, {
+      const response = await fetch(`${backend_url}/api/agency/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -328,7 +358,7 @@ export const editAgency = async (id: string) => {
 export const updateAgency = async (id:any, name:any, email:any, oto1:any, password=null) => {
       try {
      const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/update-agency/${id}`, {
+      const response = await fetch(`${backend_url}/api/update-agency/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -353,7 +383,7 @@ export const updateAgency = async (id:any, name:any, email:any, oto1:any, passwo
 export const deleteAgency = async (id: any) =>{
 try {
      const token = localStorage.getItem("token"); 
-      const response = await fetch(`http://localhost:8000/api/delete-agency/${id}`, {
+      const response = await fetch(`${backend_url}/api/delete-agency/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -373,6 +403,131 @@ try {
       throw err;
     }
 }
+
+
+export const publishWeb = async (htmlcode: string, csscode: string, jscode: string, title: string, prompt: string) => {
+     try {
+     const token = localStorage.getItem("token");
+      const response = await fetch(`${backend_url}/api/publish-website`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({htmlcode, csscode, jscode, title, prompt}),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Publish failed");
+      }
+
+    const data = await response.json();
+    return data; 
+
+    } catch (err: any) {
+      throw err;
+    }
+}
+
+export const getPublishWeb = async () => {
+    try {
+     const token = localStorage.getItem("token"); 
+      const response = await fetch(`${backend_url}/api/all-website`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Get Website failed");
+      }
+
+    const data = await response.json();
+    return data; 
+
+    } catch (err: any) {
+      throw err;
+    }
+}
+
+export const deleteWebPage = async (id: any) => {
+  
+    try {
+     const token = localStorage.getItem("token"); 
+      const response = await fetch(`${backend_url}/api/delete-website/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Delete Website failed");
+      }
+
+    const data = await response.json();
+    return data; 
+
+    } catch (err: any) {
+      throw err;
+    }
+}
+
+export const editProject = async (slug: any) =>{
+    try {
+     const token = localStorage.getItem("token"); 
+      const response = await fetch(`${backend_url}/api/edit-project/${slug}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Edit Project failed");
+      }
+
+    const data = await response.json();
+    return data; 
+
+    } catch (err: any) {
+      throw err;
+    }
+}
+
+export const editWebsite = async (htmlcode: string, csscode: string, jscode: string, title: string, prompt: string) =>{
+    try {
+     const token = localStorage.getItem("token"); 
+      const response = await fetch(`${backend_url}/api/edit-website`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+         body: JSON.stringify({htmlcode, csscode, jscode, title, prompt}),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Edit Project failed");
+      }
+
+    const data = await response.json();
+    return data; 
+
+    } catch (err: any) {
+      throw err;
+    }
+}
+
 
 
 

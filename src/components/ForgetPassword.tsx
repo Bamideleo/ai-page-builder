@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom";
-import { loginApi, RestPassword } from "../api/auth";
-import { setToken } from "../utils/auth";
+import { ResetPassword } from "../api/auth";
 import authBg from "../asset/login-bg.png";
 import Swal from 'sweetalert2';
 
@@ -27,7 +26,7 @@ export const ForgetPassword = () => {
 
     // Mock successful authentication
     try {
-      const res = await RestPassword(formData.email);
+      const res = await ResetPassword(formData.email);
       Swal.fire({
            toast: true,
            icon: "success",

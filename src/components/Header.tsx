@@ -44,9 +44,10 @@ useEffect(() => {
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" /> */}
                 </button>
                 <div className="flex items-center space-x-2 text-sm text-gray-400">
-                  <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-xs font-semibold">
+                  {/* <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-xs font-semibold">
                     <Users className='text-white text-xs'/>
-                  </div>
+                  </div> */}
+                  <img width="25" height="25" src="https://img.icons8.com/3d-fluency/94/user-male-circle.png" alt="user-male-circle"/>
                   <span className="capitalize">{user.name}</span>
                 </div>
               </div>

@@ -4,6 +4,7 @@ import { Mic, MicOff, Sparkles, ArrowRight, Lightbulb, Zap, Globe, ShoppingBag, 
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import {SamplePrompt, Project, Page } from '../types';
 import { Link, useNavigate } from "react-router-dom";
+import { isUserDetails } from '../utils/auth';
 interface CreateProjectProps {
   onCreateProject: (prompt: string) => void;
 }
@@ -14,6 +15,7 @@ interface CreateProjectProps {
 
 export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject }) => {
   const [prompt, setPrompt] = useState('');
+  const [user, setUser] = useState(isUserDetails);
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>('auth');
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
@@ -141,6 +143,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject })
     
     // Simulate processing time
     await new Promise(resolve => setTimeout(resolve, 1000));
+    // console.log(prompt);
+    
    
     handleCreateProject(prompt);
   };
@@ -193,10 +197,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject })
           </div>
           
           <div className="flex items-center space-x-2 text-sm text-slate-300">
-            <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-xs font-semibold">
-              Free
-            </div>
-            <span className="capitalize">Free Plan</span>
+           <img width="25" height="25" src="https://img.icons8.com/3d-fluency/94/user-male-circle.png" alt="user-male-circle"/>
+            <span className="capitalize">{user.name}</span>
           </div>
         </div>
       </header>
