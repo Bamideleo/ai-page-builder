@@ -99,7 +99,8 @@ export const Workspace = () => {
         ));
 
         // Simulate processing time
-        await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 5000));
+        // await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 5000));
+        await new Promise(resolve => setTimeout(resolve, 60000 + Math.random() * 10000));
 
         // Randomly simulate an error for demonstration
         if (i === 3 && Math.random() < 0.3) {
@@ -286,6 +287,7 @@ export const Workspace = () => {
     setCurrentPrompt(newPrompt);
     setIsEditingPrompt(false);
     await generateProject(newPrompt);
+    simulate();
     setNewPrompt('');
   };
 
@@ -295,6 +297,7 @@ export const Workspace = () => {
     setCurrentPrompt(newPrompt);
     setIsEditingPrompt(false);
     await generateProject(newPrompt, type, generatedCode.html, generatedCode.css, generatedCode.js,);
+    simulate();
     setNewPrompt('');
   };
 
