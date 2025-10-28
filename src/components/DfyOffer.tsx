@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Header from "./Header"
 import SideBar from "./SideBar"
-import { ExternalLink, Mail, Copy } from 'lucide-react';
+import { ExternalLink, Mail, Copy, Globe } from 'lucide-react';
 import Swal from "sweetalert2";
 const DfyOffer = () => {
 
@@ -93,20 +93,22 @@ const DfyOffer = () => {
             <div className="flex items-start">
               <span className="bg-red-200 text-red-800 text-sm font-semibold px-2 py-1 rounded-full mr-3 mt-0.5">Step 2</span>
               <div className="flex-1">
-                <p className="font-medium mb-2">Send an email to get bump to 100% across the funnel</p>
-                <button
-                  onClick={handleEmailSupport}
+                <p className="font-medium mb-2">Contact support desk via a ticket and request to get bumped to 70% across the funnel</p>
+                <Link
+                to="http://appclicksupportdesk.com/"
+                target="_blank"
                   className="inline-flex items-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
                 >
-                  <Mail className="w-4 h-4 mr-2" />
-                  hello@appclicksupportdesk.com
-                </button>
+                  <Globe className="w-4 h-4 mr-2" />
+                 http://appclicksupportdesk.com/
+                </Link>
               </div>
             </div>
             
             <div className="flex items-start">
               <span className="bg-red-200 text-red-800 text-sm font-semibold px-2 py-1 rounded-full mr-3 mt-0.5">Step 3</span>
-              <p className="font-medium">Paste your Affiliate Link into your Marketplace banner URL in "Monetize"</p>
+              {/* <p className="font-medium">Paste your Affiliate Link into your Marketplace banner URL in "Monetize"</p> */}
+              <p className="font-medium">Copy your Affiliate Link</p>
             </div>
           </div>
         </div>

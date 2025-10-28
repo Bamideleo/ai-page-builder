@@ -6,7 +6,8 @@ import Swal from 'sweetalert2'
 import { loginApi, setNewPassword } from "../api/auth";
 import { setToken, setWithExpiry } from "../utils/auth";
 import { setUserData } from "../utils/auth";
-import authBg from "../asset/login-bg.png";
+import authBg from "../asset/login-ai.png";
+import logo from "../asset/White.png";
 
 
 export const ResetPassword = () => {
@@ -109,7 +110,7 @@ export const ResetPassword = () => {
         className="w-full max-w-md relative z-10"
       >
         {/* Logo */}
-        <div className="text-center mb-8">
+        {/* <div className="text-center mb-8">
           <motion.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -118,7 +119,7 @@ export const ResetPassword = () => {
           >
             <Sparkles className="w-8 h-8 text-white" />
           </motion.div>
-        </div>
+        </div> */}
 
         {/* Auth Form */}
         <motion.div 
@@ -127,6 +128,7 @@ export const ResetPassword = () => {
           transition={{ delay: 0.4 }}
           className="bg-slate-900 backdrop-blur-xl border border-slate-900 rounded-2xl p-8 shadow-2xl"
         >
+           <img src={logo} alt="Logo" className='w-18 h-10 mx-auto  justify-center mb-3' />
        
               {/* for error message */}
           <form onSubmit={handleSubmit} className="space-y-4">

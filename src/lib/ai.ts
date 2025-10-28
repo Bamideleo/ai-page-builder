@@ -19,7 +19,8 @@ export class AIService {
     result: any[];
   }> {
       try {
-    const backend_url = 'http://localhost:8000';
+    const backend_url = 'https://api.mykleva.com';
+    // const backend_url = 'http://localhost:8000';
      const token = localStorage.getItem("token");
       const response = await fetch(`${backend_url}/api/claude-api`, {
         method: "POST",
@@ -29,7 +30,18 @@ export class AIService {
         },
         body: JSON.stringify({prompt, type, html, css, js}),
       });
+    const data = await response.json()
+    const taskId = data.task_id;
 
+  let result = null;
+  while (!result) {
+    await new Promise(r => setTimeout(r, 5000));
+    const check = await fetch(`${backend_url}/api/claude/${taskId}`);
+    const status = await check.json();
+    if (status.status === "done") {
+      result = status.result;
+    }
+  }
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "failed to Generate");
@@ -52,7 +64,7 @@ export class AIService {
         onStream(steps[i]);
       }
     }
-    const selectedTemplate = await response.json();
+    const selectedTemplate = result;
     return selectedTemplate; 
 
     } catch (err: any) {

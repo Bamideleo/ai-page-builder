@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation} from "react-router-dom";
 import {ChevronDown, Plus, Search, Filter, BarChart3, Users, Globe, Settings, LogOut, Sparkles, Edit3, Eye, Calendar, ExternalLink, Trash2, Home, FolderOpen, CreditCard, TrendingUp, HelpCircle, Bell, Flame, ArrowDownUp, DollarSign, BanknoteIcon, Workflow, UserPlus, HandMetal, Activity, WalletIcon, Gift, ArrowUpFromLine, User, Cog, HomeIcon, MartiniIcon, StoreIcon, VideoIcon } from 'lucide-react';
 import { logout } from "../utils/auth";
 import {isUserDetails} from "../utils/auth";
+import logo from "../asset/White.png";
 
 const SideBar = () => {
     const [activeMenuItem, setActiveMenuItem] = useState('tutorial');
@@ -23,15 +24,7 @@ const handleLogout = () =>  {
           {/* Logo */}
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                  AIBuilder
-                </h1>
-                <p className="text-xs text-slate-400">Next-Gen Builder</p>
-              </div>
+              <img src={logo} alt="Logo" className='w-18 h-10 mx-auto flex items-center justify-center' />
             </div>
           </div>
 
@@ -93,14 +86,14 @@ const handleLogout = () =>  {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                    activeMenuItem === 'projects'
+                    activeMenuItem === 'market'
                       ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-white shadow-lg shadow-cyan-500/10'
                       : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                    activeMenuItem === 'projects'
-                      ? `bg-gradient-to-r from-purple-400 to-pink-500` 
+                    activeMenuItem === 'market'
+                      ? `bg-gradient-to-r from-yellow-200 to-yellow-600` 
                       : 'bg-white/5'
                   }`}>
                     <StoreIcon className="w-4 h-4" />

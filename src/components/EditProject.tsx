@@ -6,8 +6,7 @@ import { Link, useLocation, useNavigate} from "react-router-dom";
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2';
-import Typewriter from "typewriter-effect";
-import { editWebsite, publishWeb } from '../api/auth';
+import { editWebsite, publishWeb, updateEditWebsite, updatepublishWeb } from '../api/auth';
 
 
 
@@ -29,11 +28,12 @@ interface FileNode {
   isOpen?: boolean;
 }
 
-export const Workspace = () => {
-  const location = useLocation();
+const EditProject = () => {
+ 
+const location = useLocation();
   const navigate = useNavigate();
-  const { project, prompt } = location.state || {};
-  const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
+  const { project, prompt } = location.state || {};  
+  const [activeTab, setActiveTab] = useState<'code' | 'preview'>('preview');
   const [processingSteps, setProcessingSteps] = useState<ProcessingStep[]>([]);
   const [isGenerating, setIsGenerating] = useState(true);
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
@@ -41,10 +41,10 @@ export const Workspace = () => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [iseditLoading, setEditIsLoading] = useState(false);
-  const [currentPrompt, setCurrentPrompt] = useState(prompt);
+  const [currentPrompt, setCurrentPrompt] = useState('');
   const [newPrompt, setNewPrompt] = useState('');
   const [newTitle, setNewTitle] = useState('');
-  const [currentTitle, setCurrentTitle] = useState(project.title);
+  const [currentTitle, setCurrentTitle] = useState(prompt);
   const [generatedCode, setGeneratedCode] = useState({
     html: '',
     css: '',
@@ -62,8 +62,9 @@ export const Workspace = () => {
   useEffect(() => {
     if (effectCalled.current) return; 
     effectCalled.current = true;
-     simulate();
-    generateProject(currentPrompt);
+    //  simulate();
+    // generateProject(currentPrompt);
+    editProjectWebsite(project);
   }, []);
 
 
@@ -282,6 +283,144 @@ export const Workspace = () => {
     }
   };
 
+
+  const editProjectWebsite = (project:any) =>{
+    setIsGenerating(true);
+    try {
+      // Generate the actual code
+  const files = project.files;
+  const contents = {
+    'html': files["index.html"],
+    'css': files["styles.css"],
+    'js': files["script.js"]
+  };
+      setGeneratedCode(contents);
+
+      // Create file structure
+      const structure: FileNode[] = [
+        {
+          name: 'src',
+          type: 'folder',
+          path: 'src',
+          isOpen: true,
+          children: [
+            {
+              name: 'index.html',
+              type: 'file',
+              path: 'src/index.html',
+              content:files["index.html"]
+            },
+            {
+              name: 'styles',
+              type: 'folder',
+              path: 'src/styles',
+              isOpen: true,
+              children: [
+                {
+                  name: 'main.css',
+                  type: 'file',
+                  path: 'src/styles/main.css',
+                  content:files["styles.css"]
+
+                },
+                {
+                  name: 'components.css',
+                  type: 'file',
+                  path: 'src/styles/components.css',
+                  content: '/* Component-specific styles */'
+                }
+              ]
+            },
+            {
+              name: 'scripts',
+              type: 'folder',
+              path: 'src/scripts',
+              isOpen: true,
+              children: [
+                {
+                  name: 'main.js',
+                  type: 'file',
+                  path: 'src/scripts/main.js',
+                  content: files["script.js"]
+
+                },
+                {
+                  name: 'utils.js',
+                  type: 'file',
+                  path: 'src/scripts/utils.js',
+                  content: '// Utility functions'
+                }
+              ]
+            },
+            {
+              name: 'assets',
+              type: 'folder',
+              path: 'src/assets',
+              isOpen: false,
+              children: [
+                {
+                  name: 'images',
+                  type: 'folder',
+                  path: 'src/assets/images',
+                  children: []
+                },
+                {
+                  name: 'fonts',
+                  type: 'folder',
+                  path: 'src/assets/fonts',
+                  children: []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'package.json',
+          type: 'file',
+          path: 'package.json',
+          content: `{
+  "name": "${prompt}",
+  "version": "1.0.0",
+  "description": "${prompt.substring(0, 100)}",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "live-server src",
+    "build": "npm run minify"
+  },
+  "dependencies": {
+    "live-server": "^1.2.2"
+  }
+}`
+        },
+        {
+          name: 'README.md',
+          type: 'file',
+          path: 'README.md',
+          content: files["README.md"]
+
+        }
+      ];
+
+      setFileStructure(structure);
+      setSelectedFile('src/index.html');
+      
+      // Create preview URL
+      const blob = new Blob([createPreviewHTML(contents)], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      setPreviewUrl(url);
+      
+      setIsGenerating(false);
+    } catch (error) {
+      console.error('Generation failed:', error);
+      setProcessingSteps(prev => prev.map(step => 
+        step.status === 'processing' 
+          ? { ...step, status: 'error', error: 'Generation failed', timestamp: new Date() }
+          : step
+      ));
+      setIsGenerating(false);
+    }
+  }
+
   const handlePromptSubmit = async () => {
     if (!newPrompt.trim()) return;
     
@@ -293,10 +432,11 @@ export const Workspace = () => {
   };
 
   const handleTweakPromptSubmit = async () => {
+
     if (!newPrompt.trim()) return;
-    const type = 1;
-    setCurrentPrompt(newPrompt);
+     setCurrentPrompt(newPrompt);
     setIsTweakPrompt(false);
+    const type = 1;
      simulate();
     await generateProject(newPrompt, type, generatedCode.html, generatedCode.css, generatedCode.js,);
     setNewPrompt('');
@@ -318,7 +458,9 @@ export const Workspace = () => {
   }
 
   const createPreviewHTML = (code: any) => {
-    return `
+
+
+ return `
       <!DOCTYPE html>
       <html>
       <head>
@@ -329,7 +471,7 @@ export const Workspace = () => {
         <script>${code.js}</script>
       </body>
       </html>
-    `;
+    `;   
   };
 
   const toggleFolder = (path: string) => {
@@ -450,7 +592,7 @@ export const Workspace = () => {
      setEditIsLoading(true);
      // Simulate API call
        try {
-         const res = await editWebsite(generatedCode.html, generatedCode.css, generatedCode.js, currentTitle, prompt);
+         const res = await updateEditWebsite(generatedCode.html, generatedCode.css, generatedCode.js, currentTitle, prompt);
          if(res.status === 400){
            Swal.fire({
                     toast: true,
@@ -462,14 +604,12 @@ export const Workspace = () => {
                   });
          }
          else{
-          
-      //Open external link first (new tab)
+       //Open external link first (new tab)
       window.open("https://live.mykleva.com/admin/", "_blank");
       //Then redirect current tab after a short delay
       setTimeout(() => {
         navigate("/projects");
       }, 500);
-          
          }
          
          
@@ -486,7 +626,7 @@ export const Workspace = () => {
    
        // Simulate API call
        try {
-         const res = await publishWeb(generatedCode.html, generatedCode.css, generatedCode.js, currentTitle, prompt);
+         const res = await updatepublishWeb(generatedCode.html, generatedCode.css, generatedCode.js, currentTitle, prompt);
          
          if(res.status === 400 ){
            Swal.fire({
@@ -553,7 +693,7 @@ export const Workspace = () => {
       {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-sm bg-slate-900  p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <Link to="/create-project"
+          <Link to="/projects"
             className="p-2 hover:bg-white/5 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -707,52 +847,6 @@ export const Workspace = () => {
               </> 
             )}
 
-            {isEditingPrompt ? (
-              <div className="space-y-3 mt-3">
-                {/* <div className="p-4 bg-gray-100 border border-white/10 rounded-lg">
-                  <p className="text-sm text-slate-600 leading-relaxed">{currentPrompt}</p>
-                </div> */}
-                <div className="relative">
-                  <textarea
-                    value={newPrompt}
-                    onChange={(e) => setNewPrompt(e.target.value)}
-                    placeholder="Add additional requirements or modifications..."
-                    className="w-full h-24 px-4 py-3 bg-white/5 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-slate-500 placeholder-slate-500 resize-none text-sm"
-                  />
-                  <div className="flex justify-end space-x-2 mt-3">
-                    <button
-                      onClick={() => setIsEditingPrompt(false)}
-                      className="px-4 py-2 text-sm border border-gray-400 rounded-lg hover:bg-black/25 hover:border-bg-black/25  hover:text-white transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handlePromptSubmit}
-                      disabled={!newPrompt.trim()}
-                      className="px-4 py-2 text-sm text-white bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg hover:shadow-lg hover:shadow-cyan-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-                    >
-                      <Send className="w-4 h-4" />
-                      <span>Update</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3 mt-3">
-                {/* <div className="p-4 bg-gray-100 border border-white/10 rounded-lg">
-                  <p className="text-sm text-slate-600 leading-relaxed">{currentPrompt}</p>
-                </div> */}
-                {!isGenerating && (
-                  <button
-                    onClick={handleEditPrompt}
-                    className="w-full p-3 border border-dashed border-gray-400 rounded-lg hover:bg-black/25 hover:border-bg-black/25   transition-colors flex items-center justify-center space-x-2 text-slate-500 hover:text-white"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Add New Prompt</span>
-                  </button>
-                )}
-              </div>
-            )}
           </div>
 
           <div className="mb-6">
@@ -964,4 +1058,8 @@ export const Workspace = () => {
       </div>
     </div>
   );
-};
+
+
+}
+
+export default EditProject

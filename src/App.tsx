@@ -18,7 +18,7 @@ import { ForgetPassword } from './components/ForgetPassword';
 import ProfileSetting from './components/ProfileSetting';
 import DfyOffer from './components/DfyOffer';
 import { ResetPassword } from './components/ResetPassword';
-import Template from './components/Template';
+import EditProject from './components/EditProject';
 
 
 function App() {
@@ -124,9 +124,16 @@ function App() {
           }
         />
 
+      <Route
+          path="/editproject"
+          element={
+            <PrivateRoute>
+            <EditProject/>
+            </PrivateRoute>
+          }
+        />
 
-
-          <Route
+        <Route
           path="/workspace"
           element={
             <PrivateRoute>
@@ -134,6 +141,7 @@ function App() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/limitless"
           element={
@@ -211,16 +219,6 @@ function App() {
               <ResetPassword/>
           }
         />
-
-
-      <Route
-          path="/template"
-          element={
-              <Template/>
-          }
-        />
-
-
       </Routes>
       
     </Router>

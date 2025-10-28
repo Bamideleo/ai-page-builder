@@ -5,6 +5,7 @@ import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import {SamplePrompt, Project, Page } from '../types';
 import { Link, useNavigate } from "react-router-dom";
 import { isUserDetails } from '../utils/auth';
+import logoI from "../asset/Icon.png";
 interface CreateProjectProps {
   onCreateProject: (prompt: string) => void;
 }
@@ -16,6 +17,8 @@ interface CreateProjectProps {
 export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject }) => {
   const [prompt, setPrompt] = useState('');
   const [user, setUser] = useState(isUserDetails);
+  const [placeholderText, setPlaceholderText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>('auth');
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
@@ -34,59 +37,79 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject })
   const samplePrompts: SamplePrompt[] = [
     {
       id: '1',
-      title: 'E-commerce Store',
-      description: 'Complete online store with products, cart, and checkout',
+      title: 'E-commerce',
+      description: ' Build a luxury modern eCommerce website',
       category: 'ecommerce',
-      prompt_text: 'Create a modern e-commerce store with product catalog, shopping cart, checkout process, and payment integration. Include user accounts, order tracking, and admin dashboard.',
+      prompt_text: ' Build a luxury modern eCommerce website that sells wristwatch, fashion, shoes, bags, cloth and accessories. Include editorial-style product grids, hover-zoom effects, size and color filters, and automatic discount highlights. Make it modern, elegant, and conversion-focused.',
       is_active: true
     },
-    {
+       {
       id: '2',
-      title: 'Portfolio Website',
-      description: 'Professional portfolio with projects and contact form',
-      category: 'portfolio',
-      prompt_text: 'Build a stunning portfolio website showcasing my work as a developer. Include hero section, about me, projects gallery, skills, testimonials, and contact form.',
-      is_active: true
-    },
-    {
-      id: '3',
-      title: 'SaaS Landing Page',
-      description: 'High-converting landing page with pricing and features',
-      category: 'saas',
-      prompt_text: 'Design a high-converting SaaS landing page with hero section, features, pricing tables, testimonials, FAQ, and call-to-action buttons. Make it modern and professional.',
-      is_active: true
-    },
-    {
-      id: '4',
-      title: 'School Portal',
-      description: 'Complete educational platform with admin and student areas',
-      category: 'education',
-      prompt_text: 'Create a comprehensive school management portal with student dashboard, teacher panel, admin area, course management, grades, attendance, and parent portal.',
+      title: 'Netflix',
+      description: 'Clone the Netflix website with the exact layout',
+      category: 'blog',
+      prompt_text: 'Clone the Netflix website with the exact layout',
       is_active: true
     },
     {
       id: '5',
-      title: 'Blog Website',
-      description: 'Modern blog with CMS and comment system',
-      category: 'blog',
-      prompt_text: 'Build a modern blog website with article management, categories, tags, search functionality, comment system, and author profiles. Include SEO optimization.',
+      title: 'Portfolio',
+      description: 'Professional portfolio with projects and contact form',
+      category: 'portfolio',
+      prompt_text: 'Build a stunning portfolio website showing my work as a baker and event decorator — with a beautiful hero section, about me, event gallery, skills, testimonials, pricing table, and a contact form for bookings. Make it elegant, colorful, and classy.',
+      is_active: true
+    },
+    {
+      id: '3',
+      title: 'Sales Page',
+      description: 'Create a high-converting sales page',
+      category: 'saas',
+      prompt_text: 'Create a high-converting sales page to sell my Omni-Fat Burner weight loss product.',
+      is_active: true
+    },
+    {
+      id: '4',
+      title: 'E-Learning Platform',
+      description: 'Build a modern online learning website like Udemy or Coursera',
+      category: 'education',
+      prompt_text: 'Build a modern online learning website like Udemy or Coursera, with a clean homepage, course listings, instructor profiles, student testimonials, and a contact or enrollment section. Make it professional, responsive, and education-focused.',
       is_active: true
     },
     {
       id: '6',
-      title: 'Church Website',
-      description: 'Community website with events and donation system',
+      title: 'Real Estate Website',
+      description: 'Create a live cinematic showcase site with fullscreen galleries',
       category: 'business',
-      prompt_text: 'Create a beautiful church website with service times, events calendar, sermon archive, donation system, volunteer signup, and community features.',
+      prompt_text: 'Create a live cinematic showcase site with fullscreen galleries, 3D property previews, and agent profiles',
       is_active: true
     }
   ];
+const fullPlaceholder = "Create a modern eCommerce website that sells Rolex premium watches. Clone Netflix website, Create a landing page for a luxury real estate agency in Dubai, Build a stunning portfolio website, Design a social media platform.";
+    
 
   useEffect(() => {
     if (transcript) {
       setPrompt(transcript);
     }
-  }, [transcript]);
+
+   if (currentIndex < fullPlaceholder.length) {
+      const timeout = setTimeout(() => {
+        setPlaceholderText(fullPlaceholder.slice(0, currentIndex + 1));
+        setCurrentIndex(currentIndex + 1);
+      }, 50); // Speed of typing (50ms per character)
+      
+      return () => clearTimeout(timeout);
+    } else {
+      // Optional: Reset and loop the animation
+      const resetTimeout = setTimeout(() => {
+        setCurrentIndex(0);
+        setPlaceholderText('');
+      }, 3000); // Wait 3 seconds before restarting
+      
+      return () => clearTimeout(resetTimeout);
+    }
+
+  }, [transcript, currentIndex]);
 
   const handleVoiceToggle = () => {
     if (isListening) {
@@ -143,9 +166,6 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject })
     
     // Simulate processing time
     await new Promise(resolve => setTimeout(resolve, 1000));
-    // console.log(prompt);
-    
-   
     handleCreateProject(prompt);
   };
 
@@ -189,8 +209,8 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject })
               ←
             </Link>
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-r from-slate-50 to-blue-50 rounded-lg flex items-center justify-center">
+                <img src={logoI} alt="Logo" />
               </div>
               <h1 className="text-xl font-bold">Create New Project</h1>
             </div>
@@ -211,11 +231,13 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject })
           className="text-center mb-12"
         >
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-            What would you like to build?
+           What would you like to build today?
           </h2>
           <p className="text-xl text-slate-500 max-w-2xl mx-auto">
-            Describe your vision in plain English or choose from our sample prompts. 
-            Our AI will generate a complete, working website in seconds.
+           Simply type or talk your ideas — in any language — into reality.
+          </p>
+          <p className="text-xl text-slate-500 max-w-2xl mx-auto">
+          <i>Kleva AI designs, codes, and launches it instantly.</i>
           </p>
         </motion.div>
 
@@ -231,7 +253,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject })
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Describe your website or app idea... e.g., 'Create a modern e-commerce store for selling handmade jewelry with a clean design, product catalog, shopping cart, and secure checkout'"
+                placeholder={placeholderText}
                 className="w-full h-32 px-6 py-4 bg-white/5 backdrop-blur-sm border border-gray-400 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-slate-500 placeholder-slate-500 resize-none text-lg leading-relaxed"
                 required
               />
@@ -349,7 +371,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({ onCreateProject })
                 <li>• Be specific about your target audience and purpose</li>
                 <li>• Mention desired features like contact forms, galleries, or e-commerce</li>
                 <li>• Include style preferences (modern, minimalist, colorful, etc.)</li>
-                <li>• Specify any integrations needed (payments, social media, analytics)</li>
+                {/* <li>• Specify any integrations needed (payments, social media, analytics)</li> */}
               </ul>
             </div>
           </div>

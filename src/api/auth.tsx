@@ -1,5 +1,6 @@
 
-const backend_url = 'http://localhost:8000';
+const backend_url = 'https://api.mykleva.com';
+// const backend_url = 'http://localhost:8000';
 export const loginApi = async (email: string, password: string) => {
   try {
     const response = await fetch(`${backend_url}/api/login`, {
@@ -430,6 +431,31 @@ export const publishWeb = async (htmlcode: string, csscode: string, jscode: stri
     }
 }
 
+export const updatepublishWeb = async (htmlcode: string, csscode: string, jscode: string, title: string, prompt: string) => {
+     try {
+     const token = localStorage.getItem("token");
+      const response = await fetch(`${backend_url}/api/update-website`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({htmlcode, csscode, jscode, title, prompt}),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Publish failed");
+      }
+
+    const data = await response.json();
+    return data; 
+
+    } catch (err: any) {
+      throw err;
+    }
+}
+
 export const getPublishWeb = async () => {
     try {
      const token = localStorage.getItem("token"); 
@@ -503,10 +529,36 @@ export const editProject = async (slug: any) =>{
     }
 }
 
+
 export const editWebsite = async (htmlcode: string, csscode: string, jscode: string, title: string, prompt: string) =>{
     try {
      const token = localStorage.getItem("token"); 
       const response = await fetch(`${backend_url}/api/edit-website`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+         body: JSON.stringify({htmlcode, csscode, jscode, title, prompt}),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Edit Project failed");
+      }
+
+    const data = await response.json();
+    return data; 
+
+    } catch (err: any) {
+      throw err;
+    }
+}
+
+export const updateEditWebsite = async (htmlcode: string, csscode: string, jscode: string, title: string, prompt: string) =>{
+    try {
+     const token = localStorage.getItem("token"); 
+      const response = await fetch(`${backend_url}/api/update-edit-website`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

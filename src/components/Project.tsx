@@ -114,14 +114,15 @@ const handleDelete = async (id: any) => {
         }
 }
 
-// const handleEditProject = async (slug: any) =>{
-//     try {
-//          const res = await editProject(slug);
-//          window.open('http://localhost/Vvveb/admin/', '_blank');
-//         } catch (err) {
-//           console.error("Failed to delete project:", err);
-//         }
-// }
+const handleEditProject = async (slug: any) =>{
+    try {
+         const res = await editProject(slug);
+        navigate('/editproject', { state: {project:res, prompt:slug} })
+        //  window.open('http://localhost/Vvveb/admin/', '_blank');
+        } catch (err) {
+          console.error("Failed to delete project:", err);
+        }
+}
 
   return (
    <>
@@ -161,14 +162,14 @@ const handleDelete = async (id: any) => {
             <Plus className="w-5 h-5" />
             <span className="font-semibold">Create New Project</span>
           </Link>
-          <Link 
-          to={'/template'}
+          {/* <Link 
+          to={'#'}
            
             className="flex-1 p-4 border border-black/50 rounded-xl backdrop-blur-sm hover:bg-white/5 transition-all duration-300 flex items-center justify-center space-x-2"
           >
             <Sparkles className="w-5 h-5" />
             <span className="font-semibold">Browse Templates</span>
-          </Link>
+          </Link> */}
         </motion.div>
         </div>
        
@@ -246,7 +247,7 @@ const handleDelete = async (id: any) => {
                       <span className="capitalize">{project.deployment_type} deployment</span> */}
                     </div>
                     
-                    {project.content && (
+                    {/* {project.content && (
                       <div className="mt-2">
                         <Link 
                           to={project.content} 
@@ -259,17 +260,17 @@ const handleDelete = async (id: any) => {
                           <ExternalLink className="w-3 h-3" />
                         </Link>
                       </div>
-                    )}
+                    )} */}
                   </div>
 
                   <div className="flex space-x-2">
                   
-                  {/* <button 
+                  <button 
                   onClick={() => handleEditProject(project.title)}
                   className="p-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors flex items-center space-x-2"
                   >
                   <Edit3 className="w-4 h-4" />
-                  </button>   */}
+                  </button>  
                   
 
                   <div className="relative group inline-block">

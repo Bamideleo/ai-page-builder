@@ -6,7 +6,9 @@ import Swal from 'sweetalert2'
 import { loginApi } from "../api/auth";
 import { setToken, setWithExpiry } from "../utils/auth";
 import { setUserData } from "../utils/auth";
-import authBg from "../asset/login-bg.png";
+import authBg from "../asset/login-ai.png";
+import logo from "../asset/White.png";
+
 
 
 export const AuthPage = () => {
@@ -99,16 +101,16 @@ export const AuthPage = () => {
         className="w-full max-w-md relative z-10"
       >
         {/* Logo */}
-        <div className="text-center mb-8">
+        {/* <div className="text-center mb-8">
           <motion.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4"
+            className="w-16 h-16 bg-gradient-to-r from-slate-50 to-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4"
           >
-            <Sparkles className="w-8 h-8 text-white" />
+           <img src={iconImg} alt="Logo" />
           </motion.div>
-        </div>
+        </div> */}
 
         {/* Auth Form */}
         <motion.div 
@@ -117,9 +119,9 @@ export const AuthPage = () => {
           transition={{ delay: 0.4 }}
           className="bg-slate-900 backdrop-blur-xl border border-slate-900 rounded-2xl p-8 shadow-2xl"
         >
-       
+        <img src={logo} alt="Logo" className='w-18 h-10 mx-auto  justify-center mb-3' />
               {/* for error message */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 mb-4">
           
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -193,7 +195,8 @@ export const AuthPage = () => {
             </motion.button>
             
           </form>
-          <Link to="https://appclick.convertri.com/support" target='_blank' className="text-cyan-400 hover:text-cyan-300 transition-colors">
+
+          <Link to="http://appclicksupportdesk.com/" target='_blank' className="text-cyan-400 hover:text-cyan-300 transition-colors text-center">
                   Need Help? Contact Support Here
         </Link>
         </motion.div>
